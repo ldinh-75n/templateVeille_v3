@@ -11,20 +11,20 @@ def calculer_score_article(article: Article) -> int:
     """
 
     prompt_systeme = """
-Tu travailles pour une équipe SID/DNSI qui construit une veille IA interne.
+            Tu travailles pour une équipe SID/DNSI qui construit une veille IA interne.
 
-Évalue l'intérêt de l'article pour une équipe qui travaille sur :
-- LLM open source
-- RAG
-- agents IA
-- serving de modèles avec vLLM
-- sécurité IA
-- outils développeurs IA
-- architecture de plateforme IA
-- IA pour le secteur public ou l'agriculture
+            Évalue l'intérêt de l'article pour une équipe qui travaille sur :
+            - LLM open source
+            - RAG
+            - agents IA
+            - serving de modèles avec vLLM
+            - sécurité IA
+            - outils développeurs IA
+            - architecture de plateforme IA
+            - IA pour le secteur public ou l'agriculture
 
-Attribue une note de pertinence entre 0 et 10.
-"""
+            Attribue une note de pertinence entre 0 et 10.
+            """
 
     llm_structure = get_llm(
         temperature=0.1
