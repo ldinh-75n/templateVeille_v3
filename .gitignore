@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+
+# Outputs
+outputs/
+
+# LangGraph
+.langgraph_api/
+
+# Logs
+logs/
+
+# Python packaging
+*.egg-info/
+build/
+dist/
