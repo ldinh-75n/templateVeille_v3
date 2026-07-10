@@ -18,13 +18,13 @@ def resumer_articles(
     resumes: list[ResumeArticle] = []
 
     prompt_systeme = """
-Tu rédiges une veille IA professionnelle pour une équipe SID/DNSI.
+        Tu rédiges une veille IA professionnelle pour une équipe SID/DNSI.
 
-Pour chaque article :
-- résume en français
-- explique l'impact concret pour une équipe data/IA/SI
-- propose quelques tags courts
-"""
+        Pour chaque article :
+        - résume en français
+        - explique l'impact concret pour une équipe data/IA/SI
+        - propose quelques tags courts
+        """
 
     for article in articles:
         resultat = llm_structure.invoke(
