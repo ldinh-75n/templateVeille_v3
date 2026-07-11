@@ -13,7 +13,7 @@ st.set_page_config(
     layout="wide",
 )
 
-st.title("🤖 Veille IA SID/DNSI - Version 2")
+st.title("🤖 Veille IA SID/DNSI")
 
 with st.sidebar:
     st.header("Configuration")
