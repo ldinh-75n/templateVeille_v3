@@ -17,6 +17,16 @@ def resumer_articles(
 
     resumes: list[ResumeArticle] = []
 
+    # Ne pas modifier
+    prompt_systeme_original = """
+        Tu rédiges une veille IA professionnelle pour une équipe SID/DNSI.
+
+        Pour chaque article :
+        - résume en français
+        - explique l'impact concret pour une équipe data/IA/SI
+        - propose quelques tags courts
+        """
+
     prompt_systeme = """
         Tu rédiges une veille IA professionnelle pour une équipe SID/DNSI.
 
