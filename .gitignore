@@ -21,6 +21,7 @@ outputs/
 
 # Logs
 logs/
+nohup.out
 
 # Python packaging
 *.egg-info/
