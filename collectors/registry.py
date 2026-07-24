@@ -1,6 +1,8 @@
 from collectors.base import CollecteurBase
 from collectors.huggingface import CollecteurHuggingFace
+from collectors.machinelearningmastery import CollecteurMachineLearningMastery
 from collectors.mistral import CollecteurMistral
+from collectors.xdaforums import CollecteurXdaForums
 
 
 # Registre central de tous les collecteurs disponibles.
@@ -11,6 +13,8 @@ from collectors.mistral import CollecteurMistral
 COLLECTEURS: dict[str, CollecteurBase] = {
     "mistral": CollecteurMistral(),
     "huggingface": CollecteurHuggingFace(),
+    "xdaforums": CollecteurXdaForums(),
+    "machinelearningmastery": CollecteurMachineLearningMastery(),
 }
 
 

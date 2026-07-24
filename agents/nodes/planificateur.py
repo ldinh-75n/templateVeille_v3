@@ -10,7 +10,12 @@ def noeud_planificateur(etat: EtatAgent) -> EtatAgent:
     etat.journal_execution.append("Planification de la mission.")
 
     if not etat.sources_a_utiliser:
-        etat.sources_a_utiliser = ["mistral", "huggingface"]
+        etat.sources_a_utiliser = [
+            "mistral",
+            "huggingface",
+            "xdaforums",
+            "machinelearningmastery",
+        ]
 
     if not etat.articles_collectes:
         etat.prochaine_action = ActionAgent.COLLECTER
