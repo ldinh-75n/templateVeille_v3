@@ -14,15 +14,14 @@ st.set_page_config(
 
 st.title("🤖 Veille IA SID/DNSI")
 
+if "etat" not in st.session_state:
+    st.session_state.etat = None
+
+if "email_envoye" not in st.session_state:
+    st.session_state.email_envoye = False
+
 with st.sidebar:
     st.header("Configuration")
-
-    limite = st.slider(
-        "Nombre d'articles par source",
-        min_value=1,
-        max_value=10,
-        value=3,
-    )
 
     envoyer_email = st.checkbox(
         "Envoyer la veille par email",
@@ -46,10 +45,33 @@ with st.sidebar:
 if lancer:
     with st.spinner("Collecte, sélection et résumé en cours..."):
         agent = VeilleAgent()
-        etat = agent.executer(
-            limite_par_source=limite,
-        )
+        st.session_state.etat = agent.executer()
+        st.session_state.email_envoye = False
 
+    if envoyer_email:
+        liste_destinataires = [
+            email.strip()
+            for email in destinataires.split(",")
+            if email.strip()
+        ]
+
+        chemin_markdown = st.session_state.etat.metadonnees.get(
+            "chemin_rapport_markdown", "outputs/rapport_veille.md"
+        )
+        chemin_pdf = st.session_state.etat.metadonnees.get("chemin_rapport_pdf")
+
+        if not liste_destinataires:
+            st.warning("Aucun destinataire renseigné, email non envoyé.")
+        else:
+            st.session_state.email_envoye = envoyer_email_veille(
+                destinataires=liste_destinataires,
+                chemin_markdown=chemin_markdown,
+                chemin_pdf=chemin_pdf,
+            )
+
+etat = st.session_state.etat
+
+if etat is not None:
     st.success(
         f"{len(etat.resumes)} article(s) retenu(s)"
     )
@@ -99,6 +121,7 @@ if lancer:
                 file_name="rapport_veille.md",
                 mime="text/markdown",
                 use_container_width=True,
+                key="telechargement_markdown",
             )
 
     chemin_pdf = etat.metadonnees.get("chemin_rapport_pdf")
@@ -111,23 +134,8 @@ if lancer:
                 file_name="rapport_veille.pdf",
                 mime="application/pdf",
                 use_container_width=True,
+                key="telechargement_pdf",
             )
 
-    if envoyer_email:
-        liste_destinataires = [
-            email.strip()
-            for email in destinataires.split(",")
-            if email.strip()
-        ]
-
-        if not liste_destinataires:
-            st.warning("Aucun destinataire renseigné.")
-        else:
-            succes = envoyer_email_veille(
-                destinataires=liste_destinataires,
-                chemin_markdown=chemin_markdown,
-                chemin_pdf=chemin_pdf,
-            )
-
-            if succes:
-                st.success("Email préparé / envoyé avec succès.")
+    if envoyer_email and st.session_state.email_envoye:
+        st.success("Email préparé / envoyé avec succès.")

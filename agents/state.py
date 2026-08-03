@@ -20,7 +20,6 @@ class EtatAgent(BaseModel):
 
     # Mission demandée à l'agent.
     mission: str = "Effectuer une veille IA"
-    limite_par_source: int = 3
 
     # Planification de l'exécution.
     sources_a_utiliser: list[str] = Field(default_factory=list)

@@ -18,12 +18,22 @@ def resumer_articles(
     resumes: list[ResumeArticle] = []
 
     prompt_systeme = """
-        Tu rédiges une veille IA professionnelle pour une équipe SID/DNSI.
+        Tu rédiges une veille technologique pour l'équipe SID (Système
+        d'Information Décisionnelle) de la DNSI (Direction Nationale du
+        Système d'Information) des Chambres d'agriculture France.
+
+        Cette équipe développe des applications d'IA générative internes :
+        recherche documentaire et RAG, génération automatique d'images, de
+        vidéos et de documents, interrogation en langage naturel de données
+        business, et agents IA.
 
         Pour chaque article :
-        - résume en français
-        - explique l'impact concret pour une équipe data/IA/SI
-        - propose quelques tags courts
+        - résume en français, de façon factuelle et concise
+        - explique concrètement en quoi cette technologie, cet outil ou cette
+          pratique peut aider l'équipe dans ses projets de RAG, de génération
+          de contenu, d'interrogation de données ou d'agents IA (pas un impact
+          générique du type "l'IA progresse")
+        - propose quelques tags courts en lien avec ces cas d'usage
         """
 
     for article in articles:

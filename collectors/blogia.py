@@ -31,7 +31,7 @@ class CollecteurBlogIA(CollecteurBase):
         except ValueError:
             return None
 
-    def collecter(self, limite: int = 5) -> list[Article]:
+    def collecter(self) -> list[Article]:
         nom_source = "Blog IA"
         theme = "IA grand public, outils IA, guides pratiques"
         url_blog = "https://blog-ia.com/blog/"
@@ -93,8 +93,5 @@ class CollecteurBlogIA(CollecteurBase):
                     date_publication=date_publication,
                 )
             )
-
-            if len(articles) >= limite:
-                break
 
         return articles

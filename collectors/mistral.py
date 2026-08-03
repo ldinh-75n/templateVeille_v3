@@ -29,7 +29,7 @@ class CollecteurMistral(CollecteurBase):
 
         return None
 
-    def collecter(self, limite: int = 5) -> list[Article]:
+    def collecter(self) -> list[Article]:
         nom_source = "Mistral AI"
         theme = "LLM, modèles français, agents IA"
         url_base = "https://mistral.ai"
@@ -79,8 +79,5 @@ class CollecteurMistral(CollecteurBase):
                     date_publication=date_publication,
                 )
             )
-
-            if len(articles) >= limite:
-                break
 
         return articles

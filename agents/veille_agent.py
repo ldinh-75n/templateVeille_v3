@@ -12,15 +12,13 @@ class VeilleAgent:
     def __init__(self):
         self.graphe = construire_graphe()
 
-    def executer(self, limite_par_source: int = 3) -> EtatAgent:
+    def executer(self) -> EtatAgent:
         """
         Lance une exécution complète de la veille
         et retourne toujours un EtatAgent.
         """
 
-        etat_initial = EtatAgent(
-            limite_par_source=limite_par_source
-        )
+        etat_initial = EtatAgent()
 
         resultat = self.graphe.invoke(etat_initial)
 

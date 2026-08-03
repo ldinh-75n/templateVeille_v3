@@ -12,7 +12,6 @@ def noeud_collecte(etat: EtatAgent) -> EtatAgent:
 
     etat.articles_collectes = collecter_articles(
         sources_a_utiliser=etat.sources_a_utiliser,
-        limite_par_source=etat.limite_par_source,
     )
 
     enregistrer_articles(etat.articles_collectes)

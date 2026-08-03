@@ -5,7 +5,6 @@ from tools.stocker_articles import charger_urls_existantes
 
 def collecter_articles(
     sources_a_utiliser: list[str],
-    limite_par_source: int = 5,
 ) -> list[Article]:
     """
     Collecte des articles depuis les sources demandées.
@@ -27,7 +26,7 @@ def collecter_articles(
         collecteur.definir_urls_a_ignorer(urls_deja_connues)
 
         try:
-            articles = collecteur.collecter(limite=limite_par_source)
+            articles = collecteur.collecter()
             articles_collectes.extend(articles)
 
         except Exception as erreur:

@@ -24,9 +24,10 @@ class CollecteurBase(ABC):
         self.urls_a_ignorer = urls
 
     @abstractmethod
-    def collecter(self, limite: int = 5) -> list[Article]:
+    def collecter(self) -> list[Article]:
         """
-        Collecte les articles d'une source donnée.
+        Collecte tous les articles pertinents d'une source donnée
+        (pas de limite de nombre, seule la fenêtre de fraîcheur s'applique).
         """
         pass
 

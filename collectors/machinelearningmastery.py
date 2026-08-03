@@ -31,7 +31,7 @@ class CollecteurMachineLearningMastery(CollecteurBase):
         except ValueError:
             return None
 
-    def collecter(self, limite: int = 5) -> list[Article]:
+    def collecter(self) -> list[Article]:
         nom_source = "Machine Learning Mastery"
         theme = "Tutoriels ML, LLM, agents IA, bonnes pratiques"
         url_base = "https://machinelearningmastery.com"
@@ -123,8 +123,5 @@ class CollecteurMachineLearningMastery(CollecteurBase):
                     date_publication=date_publication,
                 )
             )
-
-            if len(articles) >= limite:
-                break
 
         return articles

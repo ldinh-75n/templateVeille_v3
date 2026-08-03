@@ -74,7 +74,7 @@ class CollecteurXdaForums(CollecteurBase):
         except ValueError:
             return None
 
-    def collecter(self, limite: int = 5) -> list[Article]:
+    def collecter(self) -> list[Article]:
         nom_source = "XDA Forums (AI)"
         theme = "IA sur mobile, LLM locaux, discussions communautaires"
         url_base = "https://xdaforums.com"
@@ -143,8 +143,5 @@ class CollecteurXdaForums(CollecteurBase):
                     date_publication=date_publication,
                 )
             )
-
-            if len(articles) >= limite:
-                break
 
         return articles

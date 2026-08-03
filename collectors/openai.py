@@ -25,7 +25,7 @@ class CollecteurOpenAI(CollecteurBase):
         reponse.raise_for_status()
         return BeautifulSoup(reponse.text, "html.parser")
 
-    def collecter(self, limite: int = 5) -> list[Article]:
+    def collecter(self) -> list[Article]:
         nom_source = "OpenAI"
         theme = "LLM, agents IA, recherche, produits OpenAI"
         url_base = "https://openai.com"
@@ -98,8 +98,5 @@ class CollecteurOpenAI(CollecteurBase):
                     date_publication=date_publication,
                 )
             )
-
-            if len(articles) >= limite:
-                break
 
         return articles

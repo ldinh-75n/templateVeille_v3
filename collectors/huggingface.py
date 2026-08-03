@@ -31,7 +31,7 @@ class CollecteurHuggingFace(CollecteurBase):
         except ValueError:
             return None
 
-    def collecter(self, limite: int = 5) -> list[Article]:
+    def collecter(self) -> list[Article]:
         nom_source = "Hugging Face"
         theme = "Open source, modèles IA, datasets, agents"
         url_base = "https://huggingface.co"
@@ -99,8 +99,5 @@ class CollecteurHuggingFace(CollecteurBase):
                     date_publication=date_publication,
                 )
             )
-
-            if len(articles) >= limite:
-                break
 
         return articles
