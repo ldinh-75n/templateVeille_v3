@@ -4,7 +4,6 @@ import streamlit as st
 
 from agents.veille_agent import VeilleAgent
 from tools.envoyer_email import envoyer_email_veille
-from tools.generer_pdf import generer_pdf_depuis_markdown
 
 
 st.set_page_config(
@@ -23,11 +22,6 @@ with st.sidebar:
         min_value=1,
         max_value=10,
         value=3,
-    )
-
-    generer_pdf = st.checkbox(
-        "Générer aussi un PDF",
-        value=False,
     )
 
     envoyer_email = st.checkbox(
@@ -107,12 +101,9 @@ if lancer:
                 use_container_width=True,
             )
 
-    if generer_pdf:
-        chemin_pdf = generer_pdf_depuis_markdown(
-            chemin_markdown=chemin_markdown,
-            chemin_pdf="outputs/rapport_veille.pdf",
-        )
+    chemin_pdf = etat.metadonnees.get("chemin_rapport_pdf")
 
+    if chemin_pdf and Path(chemin_pdf).exists():
         with open(chemin_pdf, "rb") as fichier:
             st.download_button(
                 label="📄 Télécharger le rapport PDF",
@@ -132,8 +123,6 @@ if lancer:
         if not liste_destinataires:
             st.warning("Aucun destinataire renseigné.")
         else:
-            chemin_pdf = "outputs/rapport_veille.pdf" if generer_pdf else None
-
             succes = envoyer_email_veille(
                 destinataires=liste_destinataires,
                 chemin_markdown=chemin_markdown,

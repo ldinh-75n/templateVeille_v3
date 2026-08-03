@@ -1,9 +1,11 @@
 import re
+from datetime import datetime, timedelta
 
 from bs4 import BeautifulSoup
 from curl_cffi import requests as creq
 
 from collectors.base import CollecteurBase
+from config import JOURS_MAX_ANCIENNETE
 from models import Article
 
 
@@ -29,23 +31,48 @@ class CollecteurXdaForums(CollecteurBase):
     def extraire_contenu_article(self, url: str) -> str:
         """
         Extrait le contenu du premier post d'un fil XenForo.
+        """
+        soup = self.obtenir_soup(url)
+
+        return self.extraire_contenu_depuis_soup(soup)
+
+    def extraire_contenu_depuis_soup(self, soup: BeautifulSoup) -> str:
+        """
+        Extrait le contenu du premier post d'un fil XenForo à partir
+        d'un objet BeautifulSoup déjà chargé.
 
         Les messages XDA sont dans des div `.bbWrapper` ; on prend le premier
         (le message d'ouverture du fil) et on récupère son texte brut.
         """
-        soup = self.obtenir_soup(url)
-
         message = soup.find("div", class_="bbWrapper")
 
         if message is None:
             # Repli sur la logique générique de la classe de base.
-            return super().extraire_contenu_article(url)
+            return super().extraire_contenu_depuis_soup(soup)
 
         for balise in message(["script", "style", "blockquote"]):
             balise.decompose()
 
         texte = message.get_text(" ", strip=True)
         return texte[:4000]
+
+    def extraire_date_publication(self, soup: BeautifulSoup) -> datetime | None:
+        """
+        Extrait la date de publication du premier post d'un fil XenForo.
+
+        Le premier post porte une balise <time itemprop="datePublished" datetime="...">.
+        """
+        balise_time = soup.find("time", itemprop="datePublished")
+
+        if balise_time is None or not balise_time.get("datetime"):
+            return None
+
+        try:
+            return datetime.fromisoformat(balise_time["datetime"]).replace(
+                tzinfo=None
+            )
+        except ValueError:
+            return None
 
     def collecter(self, limite: int = 5) -> list[Article]:
         nom_source = "XDA Forums (AI)"
@@ -85,12 +112,23 @@ class CollecteurXdaForums(CollecteurBase):
             if url in urls_deja_vues:
                 continue
 
+            if url in self.urls_a_ignorer:
+                continue
+
             urls_deja_vues.add(url)
 
             try:
-                contenu = self.extraire_contenu_article(url)
+                soup_article = self.obtenir_soup(url)
             except Exception:
                 continue
+
+            date_publication = self.extraire_date_publication(soup_article)
+            date_limite = datetime.now() - timedelta(days=JOURS_MAX_ANCIENNETE)
+
+            if date_publication is None or date_publication < date_limite:
+                continue
+
+            contenu = self.extraire_contenu_depuis_soup(soup_article)
 
             if len(contenu) < 300:
                 continue
@@ -102,6 +140,7 @@ class CollecteurXdaForums(CollecteurBase):
                     source=nom_source,
                     theme=theme,
                     contenu=contenu,
+                    date_publication=date_publication,
                 )
             )
 

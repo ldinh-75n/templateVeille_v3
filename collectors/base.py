@@ -14,6 +14,15 @@ class CollecteurBase(ABC):
     récupération HTML, parsing BeautifulSoup et extraction du texte utile.
     """
 
+    def __init__(self) -> None:
+        self.urls_a_ignorer: set[str] = set()
+
+    def definir_urls_a_ignorer(self, urls: set[str]) -> None:
+        """
+        Renseigne les URLs déjà connues à ne pas re-collecter.
+        """
+        self.urls_a_ignorer = urls
+
     @abstractmethod
     def collecter(self, limite: int = 5) -> list[Article]:
         """
@@ -42,6 +51,13 @@ class CollecteurBase(ABC):
         """
         soup = self.obtenir_soup(url)
 
+        return self.extraire_contenu_depuis_soup(soup)
+
+    def extraire_contenu_depuis_soup(self, soup: BeautifulSoup) -> str:
+        """
+        Extrait le contenu textuel principal d'un article
+        à partir d'un objet BeautifulSoup déjà chargé.
+        """
         for balise in soup(["nav", "header", "footer", "script", "style"]):
             balise.decompose()
 

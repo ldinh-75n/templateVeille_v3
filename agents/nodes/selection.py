@@ -1,5 +1,6 @@
 from agents.state import EtatAgent
 from tools.selectionner_articles import selectionner_articles
+from tools.stocker_articles import mettre_a_jour_scores
 
 
 def noeud_selection(etat: EtatAgent) -> EtatAgent:
@@ -12,6 +13,8 @@ def noeud_selection(etat: EtatAgent) -> EtatAgent:
     etat.articles_selectionnes = selectionner_articles(
         etat.articles_collectes
     )
+
+    mettre_a_jour_scores(etat.articles_selectionnes)
 
     etat.metadonnees["nombre_articles_selectionnes"] = len(
         etat.articles_selectionnes

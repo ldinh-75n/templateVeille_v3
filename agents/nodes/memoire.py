@@ -9,6 +9,7 @@ def noeud_charger_memoire(etat: EtatAgent) -> EtatAgent:
 
     etat.journal_execution.append("Chargement de la mémoire.")
     etat.memoire = charger_memoire()
+    etat.metadonnees["memoire_chargee"] = True
 
     return etat
 
@@ -27,5 +28,6 @@ def noeud_sauvegarder_memoire(etat: EtatAgent) -> EtatAgent:
 
     etat.memoire["urls_deja_vues"] = sorted(urls)
     sauvegarder_memoire(etat.memoire)
+    etat.metadonnees["memoire_sauvegardee"] = True
 
     return etat

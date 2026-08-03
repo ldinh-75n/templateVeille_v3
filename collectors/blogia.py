@@ -7,79 +7,73 @@ from config import JOURS_MAX_ANCIENNETE
 from models import Article
 
 
-class CollecteurHuggingFace(CollecteurBase):
+class CollecteurBlogIA(CollecteurBase):
     """
-    Collecteur dédié au blog Hugging Face.
+    Collecteur dédié au blog IA (blog-ia.com).
     """
 
     def extraire_date_publication(self, soup: BeautifulSoup) -> datetime | None:
         """
         Extrait la date de publication depuis la page d'un article.
 
-        Sur huggingface.co/blog, la date est portée par une balise
-        <time datetime="2026-07-27T10:15:03">.
+        WordPress expose la date via
+        <meta property="article:published_time" content="2026-07-25T08:41:53+00:00">.
         """
-        balise_time = soup.find("time", attrs={"datetime": True})
+        balise_meta = soup.find("meta", property="article:published_time")
 
-        if balise_time is None:
+        if balise_meta is None or not balise_meta.get("content"):
             return None
 
         try:
-            return datetime.fromisoformat(balise_time["datetime"]).replace(
+            return datetime.fromisoformat(balise_meta["content"]).replace(
                 tzinfo=None
             )
         except ValueError:
             return None
 
     def collecter(self, limite: int = 5) -> list[Article]:
-        nom_source = "Hugging Face"
-        theme = "Open source, modèles IA, datasets, agents"
-        url_base = "https://huggingface.co"
-        url_blog = "https://huggingface.co/blog"
+        nom_source = "Blog IA"
+        theme = "IA grand public, outils IA, guides pratiques"
+        url_blog = "https://blog-ia.com/blog/"
 
         soup = self.obtenir_soup(url_blog)
 
         articles: list[Article] = []
         urls_deja_vues: set[str] = set()
+        date_limite = datetime.now() - timedelta(days=JOURS_MAX_ANCIENNETE)
 
-        chemins_bloques = {
-            "/blog",
-            "/blog/",
-            "/blog/community",
-            "/blog/leaderboards",
-            "/blog/open-source",
-        }
+        for balise_article in soup.find_all("article"):
+            lien = balise_article.find("a", href=True)
 
-        for lien in soup.find_all("a", href=True):
-            href = lien["href"]
-
-            if not href.startswith("/blog/"):
+            if lien is None:
                 continue
 
-            if href in chemins_bloques:
-                continue
+            url = lien["href"].strip()
 
-            if len(href.strip("/").split("/")) < 2:
-                continue
-
-            url = url_base + href
-
-            if url in urls_deja_vues or url.rstrip("/") == url_blog.rstrip("/"):
+            if url in urls_deja_vues:
                 continue
 
             if url in self.urls_a_ignorer:
                 continue
 
-            titre = lien.get_text(" ", strip=True)
+            titre_balise = balise_article.find(["h1", "h2", "h3"])
+            titre = (
+                titre_balise.get_text(" ", strip=True)
+                if titre_balise is not None
+                else lien.get_text(" ", strip=True)
+            )
 
-            if not titre or len(titre) < 10 or titre.lower() == "view all":
+            if not titre or len(titre) < 10:
                 continue
 
             urls_deja_vues.add(url)
 
-            soup_article = self.obtenir_soup(url)
+            try:
+                soup_article = self.obtenir_soup(url)
+            except Exception:
+                continue
+
             date_publication = self.extraire_date_publication(soup_article)
-            date_limite = datetime.now() - timedelta(days=JOURS_MAX_ANCIENNETE)
 
             if date_publication is None or date_publication < date_limite:
                 continue

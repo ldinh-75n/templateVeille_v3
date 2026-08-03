@@ -1,7 +1,9 @@
 from collectors.base import CollecteurBase
+from collectors.blogia import CollecteurBlogIA
 from collectors.huggingface import CollecteurHuggingFace
 from collectors.machinelearningmastery import CollecteurMachineLearningMastery
 from collectors.mistral import CollecteurMistral
+from collectors.openai import CollecteurOpenAI
 from collectors.xdaforums import CollecteurXdaForums
 
 
@@ -15,6 +17,8 @@ COLLECTEURS: dict[str, CollecteurBase] = {
     "huggingface": CollecteurHuggingFace(),
     "xdaforums": CollecteurXdaForums(),
     "machinelearningmastery": CollecteurMachineLearningMastery(),
+    "openai": CollecteurOpenAI(),
+    "blogia": CollecteurBlogIA(),
 }
 
 
