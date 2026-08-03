@@ -1,9 +1,6 @@
 from pathlib import Path
-
 import streamlit as st
-
 from agents.veille_agent import VeilleAgent
-from tools.envoyer_email import envoyer_email_veille
 
 
 st.set_page_config(
@@ -14,64 +11,16 @@ st.set_page_config(
 
 st.title("🤖 Veille IA SID/DNSI")
 
-if "etat" not in st.session_state:
-    st.session_state.etat = None
-
-if "email_envoye" not in st.session_state:
-    st.session_state.email_envoye = False
-
-with st.sidebar:
-    st.header("Configuration")
-
-    envoyer_email = st.checkbox(
-        "Envoyer la veille par email",
-        value=False,
-    )
-
-    destinataires = ""
-
-    if envoyer_email:
-        destinataires = st.text_input(
-            "Destinataires email",
-            placeholder="prenom.nom@example.fr, autre@example.fr",
-        )
-
-    lancer = st.button(
+lancer = st.button(
         "🚀 Générer la veille",
         use_container_width=True,
     )
 
-
 if lancer:
     with st.spinner("Collecte, sélection et résumé en cours..."):
         agent = VeilleAgent()
-        st.session_state.etat = agent.executer()
-        st.session_state.email_envoye = False
+        etat = agent.executer()
 
-    if envoyer_email:
-        liste_destinataires = [
-            email.strip()
-            for email in destinataires.split(",")
-            if email.strip()
-        ]
-
-        chemin_markdown = st.session_state.etat.metadonnees.get(
-            "chemin_rapport_markdown", "outputs/rapport_veille.md"
-        )
-        chemin_pdf = st.session_state.etat.metadonnees.get("chemin_rapport_pdf")
-
-        if not liste_destinataires:
-            st.warning("Aucun destinataire renseigné, email non envoyé.")
-        else:
-            st.session_state.email_envoye = envoyer_email_veille(
-                destinataires=liste_destinataires,
-                chemin_markdown=chemin_markdown,
-                chemin_pdf=chemin_pdf,
-            )
-
-etat = st.session_state.etat
-
-if etat is not None:
     st.success(
         f"{len(etat.resumes)} article(s) retenu(s)"
     )
@@ -121,7 +70,6 @@ if etat is not None:
                 file_name="rapport_veille.md",
                 mime="text/markdown",
                 use_container_width=True,
-                key="telechargement_markdown",
             )
 
     chemin_pdf = etat.metadonnees.get("chemin_rapport_pdf")
@@ -134,8 +82,4 @@ if etat is not None:
                 file_name="rapport_veille.pdf",
                 mime="application/pdf",
                 use_container_width=True,
-                key="telechargement_pdf",
             )
-
-    if envoyer_email and st.session_state.email_envoye:
-        st.success("Email préparé / envoyé avec succès.")

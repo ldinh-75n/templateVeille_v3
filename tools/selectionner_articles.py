@@ -19,7 +19,7 @@ def calculer_score_article(article: Article) -> int:
             internes :
             - recherche documentaire et RAG (retrieval augmented generation) sur
               des documents et données internes
-            - génération automatique d'images, de vidéos et de documents
+            - génération d'images, de vidéos et de documents
             - interrogation en langage naturel de données business (BI, requêtes
               sur les bases de données internes)
             - agents IA et automatisation de tâches
@@ -45,7 +45,7 @@ def calculer_score_article(article: Article) -> int:
             """
 
     llm_structure = get_llm(
-        temperature=0.1
+        temperature=0
     ).with_structured_output(ScorePertinence)
 
     resultat = llm_structure.invoke(
